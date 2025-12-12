@@ -1,6 +1,8 @@
 BCS = BCS or {}
 
 BCS["L"] = {
+	SET_PATTERN = "(.+) %(%d/%d%)",
+
 	["%+(%d+)%% Critical Strike"] = "%+(%d+)%% Critical Strike",
 	["([%d.]+)%% chance to crit"] = "([%d.]+)%% chance to crit",
 
@@ -33,6 +35,13 @@ BCS["L"] = {
 	["Equip: Increases damage done by Holy spells and effects by up to (%d+)."] = "Equip: Increases damage done by Holy spells and effects by up to (%d+).",
 	["Equip: Increases damage done by Nature spells and effects by up to (%d+)."] = "Equip: Increases damage done by Nature spells and effects by up to (%d+).",
 	["Equip: Increases damage done by Shadow spells and effects by up to (%d+)."] = "Equip: Increases damage done by Shadow spells and effects by up to (%d+).",
+
+	["^Set: Increases damage done by Arcane spells and effects by up to (%d+)"] = "^Set: Increases damage done by Arcane spells and effects by up to (%d+)",
+	["^Set: Increases damage done by Fire spells and effects by up to (%d+)"] = "^Set: Increases damage done by Fire spells and effects by up to (%d+)",
+	["^Set: Increases damage done by Frost spells and effects by up to (%d+)"] = "^Set: Increases damage done by Frost spells and effects by up to (%d+)",
+	["^Set: Increases damage done by Holy spells and effects by up to (%d+)"] = "^Set: Increases damage done by Holy spells and effects by up to (%d+)",
+	["^Set: Increases damage done by Nature spells and effects by up to (%d+)"] = "^Set: Increases damage done by Nature spells and effects by up to (%d+)",
+	["^Set: Increases damage done by Shadow spells and effects by up to (%d+)"] = "^Set: Increases damage done by Shadow spells and effects by up to (%d+)",
 
 	["Spell Damage %+(%d+)"] = "Spell Damage %+(%d+)",
 	["Spell damage is increased by up to (%d+)"] = "Spell damage is increased by up to (%d+)",
@@ -336,7 +345,8 @@ BCS["L"] = {
 	["amount of damage absorbed by your shield by (%d+)%%"] = "amount of damage absorbed by your shield by (%d+)%%",
 	["increases the amount blocked by (%d+)%%"] = "increases the amount blocked by (%d+)%%",
 	["increases block amount by (%d+)%%"] = "increases block amount by (%d+)%%",
-	["Block value increased by (%d+)."] = "Block value increased by (%d+).",
+	["Block value increased by (%d+)"] = "Block value increased by (%d+)",
+	["Block Value increased by (%d+)"] = "Block Value increased by (%d+)",
 	["^Stoneskin$"] = "^Stoneskin$",
 
 	["to all party members"] = "to all party members",

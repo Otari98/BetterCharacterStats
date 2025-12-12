@@ -7,7 +7,7 @@ local BCS_Prefix = "BetterCharacterStatsTooltip"
 BCS_Tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
 
 local L = BCS["L"]
-local setPattern = "(.+) %(%d/%d%)"
+local setPattern = L.SET_PATTERN
 local strfind = strfind
 local tonumber = tonumber
 local _, playerClass = UnitClass("player")
@@ -88,6 +88,12 @@ local SetBonus = {
 	spellCrit = {},
 	spellCritClass = {},
 	spellPower = {},
+	arcane = {},
+	fire = {},
+	frost = {},
+	holy = {},
+	nature = {},
+	shadow = {},
 	healingPower = {},
 	mp5 = {},
 	haste = {},
@@ -1121,6 +1127,8 @@ end
 
 local impInnerFire = nil
 local spiritualGuidance = nil
+local spellSchools = { "Arcane", "Fire", "Frost", "Holy", "Nature", "Shadow" }
+local numSpellSchools = getn(spellSchools)
 function BCS:GetSpellPower(school)
 	if school then
 		local key = strlower(school)
@@ -1170,6 +1178,12 @@ function BCS:GetSpellPower(school)
 		local damageOnly = 0
 		if BCS.needScanGear then
 			twipe(SetBonus.spellPower)
+			twipe(SetBonus.arcane)
+			twipe(SetBonus.fire)
+			twipe(SetBonus.frost)
+			twipe(SetBonus.holy)
+			twipe(SetBonus.nature)
+			twipe(SetBonus.shadow)
 			BCScache["gear"].damage_and_healing = 0
 			BCScache["gear"].only_damage = 0
 			BCScache["gear"].arcane = 0
@@ -1222,84 +1236,6 @@ function BCS:GetSpellPower(school)
 							if value then
 								BCScache["gear"].only_damage = BCScache["gear"].only_damage + tonumber(value)
 							end
-							-- Arcane
-							_, _, value = strfind(text, L["Equip: Increases damage done by Arcane spells and effects by up to (%d+)."])
-							if value then
-								BCScache["gear"].arcane = BCScache["gear"].arcane + tonumber(value)
-							end
-							_, _, value = strfind(text, L["^%+(%d+) Arcane Spell Damage"])
-							if value then
-								BCScache["gear"].arcane = BCScache["gear"].arcane + tonumber(value)
-							end
-							_, _, value = strfind(text, L["Arcane Damage %+(%d+)"])
-							if value then
-								BCScache["gear"].arcane = BCScache["gear"].arcane + tonumber(value)
-							end
-							-- Fire
-							_, _, value = strfind(text, L["Equip: Increases damage done by Fire spells and effects by up to (%d+)."])
-							if value then
-								BCScache["gear"].fire = BCScache["gear"].fire + tonumber(value)
-							end
-							_, _, value = strfind(text, L["Fire Damage %+(%d+)"])
-							if value then
-								BCScache["gear"].fire = BCScache["gear"].fire + tonumber(value)
-							end
-							_, _, value = strfind(text, L["^%+(%d+) Fire Spell Damage"])
-							if value then
-								BCScache["gear"].fire = BCScache["gear"].fire + tonumber(value)
-							end
-							-- Frost
-							_, _, value = strfind(text, L["Equip: Increases damage done by Frost spells and effects by up to (%d+)."])
-							if value then
-								BCScache["gear"].frost = BCScache["gear"].frost + tonumber(value)
-							end
-							_, _, value = strfind(text, L["Frost Damage %+(%d+)"])
-							if value then
-								BCScache["gear"].frost = BCScache["gear"].frost + tonumber(value)
-							end
-							_, _, value = strfind(text, L["^%+(%d+) Frost Spell Damage"])
-							if value then
-								BCScache["gear"].frost = BCScache["gear"].frost + tonumber(value)
-							end
-							-- Holy
-							_, _, value = strfind(text, L["Equip: Increases damage done by Holy spells and effects by up to (%d+)."])
-							if value then
-								BCScache["gear"].holy = BCScache["gear"].holy + tonumber(value)
-							end
-							_, _, value = strfind(text, L["^%+(%d+) Holy Spell Damage"])
-							if value then
-								BCScache["gear"].holy = BCScache["gear"].holy + tonumber(value)
-							end
-							_, _, value = strfind(text, L["Holy Damage %+(%d+)"])
-							if value then
-								BCScache["gear"].holy = BCScache["gear"].holy + tonumber(value)
-							end
-							-- Nature
-							_, _, value = strfind(text, L["Equip: Increases damage done by Nature spells and effects by up to (%d+)."])
-							if value then
-								BCScache["gear"].nature = BCScache["gear"].nature + tonumber(value)
-							end
-							_, _, value = strfind(text, L["^%+(%d+) Nature Spell Damage"])
-							if value then
-								BCScache["gear"].nature = BCScache["gear"].nature + tonumber(value)
-							end
-							_, _, value = strfind(text, L["Nature Damage %+(%d+)"])
-							if value then
-								BCScache["gear"].nature = BCScache["gear"].nature + tonumber(value)
-							end
-							-- Shadow
-							_, _, value = strfind(text, L["Equip: Increases damage done by Shadow spells and effects by up to (%d+)."])
-							if value then
-								BCScache["gear"].shadow = BCScache["gear"].shadow + tonumber(value)
-							end
-							_, _, value = strfind(text, L["Shadow Damage %+(%d+)"])
-							if value then
-								BCScache["gear"].shadow = BCScache["gear"].shadow + tonumber(value)
-							end
-							_, _, value = strfind(text, L["^%+(%d+) Shadow Spell Damage"])
-							if value then
-								BCScache["gear"].shadow = BCScache["gear"].shadow + tonumber(value)
-							end
 							-- Set Bonuses
 							_, _, value = strfind(text, setPattern)
 							if value then
@@ -1309,6 +1245,27 @@ function BCS:GetSpellPower(school)
 							if value and setName and not SetBonus.spellPower[setName] then
 								SetBonus.spellPower[setName] = true
 								BCScache["gear"].damage_and_healing = BCScache["gear"].damage_and_healing + tonumber(value)
+							end
+							for i = 1, numSpellSchools do
+								local school = spellSchools[i]
+								local key = strlower(school)
+								_, _, value = strfind(text, L["Equip: Increases damage done by "..school.." spells and effects by up to (%d+)."])
+								if value then
+									BCScache["gear"][key] = BCScache["gear"][key] + tonumber(value)
+								end
+								_, _, value = strfind(text, L[""..school.." Damage %+(%d+)"])
+								if value then
+									BCScache["gear"][key] = BCScache["gear"][key] + tonumber(value)
+								end
+								_, _, value = strfind(text, L["^%+(%d+) "..school.." Spell Damage"])
+								if value then
+									BCScache["gear"][key] = BCScache["gear"][key] + tonumber(value)
+								end
+								_, _, value = strfind(text, L["^Set: Increases damage done by "..school.." spells and effects by up to (%d+)"])
+								if value and setName and not SetBonus[key][setName] then
+									SetBonus[key][setName] = true
+									BCScache["gear"][key] = BCScache["gear"][key] + tonumber(value)
+								end
 							end
 						end
 					end
@@ -2019,7 +1976,12 @@ function BCS:GetBlockValue()
 	end
 	-- Buffs
 	-- Glyph of Deflection
-	local _, _, value = BCS:GetPlayerAura(L["Block value increased by (%d+)."])
+	local _, _, value = BCS:GetPlayerAura(L["Block value increased by (%d+)"])
+	if value then
+		blockValue = blockValue + tonumber(value)
+	end
+	-- Bulwark of Enduring Earth
+	_, _, value = BCS:GetPlayerAura(L["Block Value increased by (%d+)"])
 	if value then
 		blockValue = blockValue + tonumber(value)
 	end
