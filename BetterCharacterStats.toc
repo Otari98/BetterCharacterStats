@@ -1,7 +1,7 @@
 ## Interface: 11200
-## Title: BetterCharacterStats 1.14.5
-## Author: moh, Bennylava, |cffbe5effLexie|r, Spit, Pepopo
-## Version: 1.14.5
+## Title: BetterCharacterStats 1.15.0
+## Author: moh, Bennylava, Lexie, Spit, Pepopo, MarcelineVQ
+## Version: 1.15.0
 ## Notes: Improved character statistics inside Character Info panel.
 ## SavedVariablesPerCharacter: BCSConfig
 

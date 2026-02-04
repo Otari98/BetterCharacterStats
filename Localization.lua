@@ -368,6 +368,7 @@ BCS["L"] = {
 	["^Casting speed increased by (%d+)%%"] = "^Casting speed increased by (%d+)%%",
 	["^Attack and casting speed increased by (%d+)%%"] = "^Attack and casting speed increased by (%d+)%%",
 	["^Increases your attack and casting speed by (%d+)%%"] = "^Increases your attack and casting speed by (%d+)%%", -- spell:28145
+	["Increases your melee attack speed by (%d+)%%"] = "Increases your melee attack speed by (%d+)%%",
 
 	-- Armor penetration
 	["^Equip: Your attacks ignore (%d+) of the target's armor"] = "^Equip: Your attacks ignore (%d+) of the target's armor",
