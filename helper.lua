@@ -1870,7 +1870,7 @@ function BCS:GetBlockValue()
 
 	-- Buffs
 	--Glyph of Deflection
-	local _, _, value = BCS:GetPlayerAura(L["Block value increased by (%d+)."])
+	local _, _, value = BCS:GetPlayerAura(L["Block value increased by (%d+)"])
 	if value then
 		blockValue = blockValue + tonumber(value)
 	end
