@@ -134,6 +134,8 @@ BCS["L"] = {
 	["Critical strike chance with spells and melee attacks increased by (%d+)%%."] = "Critical strike chance with spells and melee attacks increased by (%d+)%%.",
 	["Increases ranged and melee critical chance by (%d+)%%."] = "Increases ranged and melee critical chance by (%d+)%%.",
 	["Equip: Increases the critical chance provided by Leader of the Pack and Moonkin Aura by (%d)%%."] = "Equip: Increases the critical chance provided by Leader of the Pack and Moonkin Aura by (%d)%%.",
+	["Your damage and healing done by magical spells and effects is increased by up to (%d+)"] = "Your damage and healing done by magical spells and effects is increased by up to (%d+)",
+	["Spell damage and healing increased by up to (%d+)"] = "Spell damage and healing increased by up to (%d+)",
 
 	-- druid
 	["Increases the damage and critical strike chance of your Moonfire spell by (%d+)%%."] = "Increases the damage and critical strike chance of your Moonfire spell by (%d+)%%.",
@@ -387,6 +389,5 @@ BCS["L"] = {
 
 
 	["^Equip: Improves your chance to hit with spells and attacks by (%d+)%%"] = "^Equip: Improves your chance to hit with spells and attacks by (%d+)%%",
-	
 	["continue (%d+)%% of their Mana regeneration"] = "continue (%d+)%% of their Mana regeneration",
 }
