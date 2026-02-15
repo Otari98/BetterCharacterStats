@@ -253,7 +253,7 @@ BCS["L"] = {
 	MP5 Regen (2s): %d]],
 
 	SPELL_HASTE_TOOLTIP = "Spell Haste",
-	SPELL_HASTE_TOOLTIP_SUB = "Reduces cast time or your spells.",
+	SPELL_HASTE_TOOLTIP_SUB = "Reduces cast time of your spells.",
 
 	PLAYERSTAT_BASE_STATS = "Base Stats",
 	PLAYERSTAT_DEFENSES = "Defenses",
