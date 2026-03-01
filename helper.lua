@@ -76,7 +76,7 @@ local function ScanAllGear()
 		if itemLink then
 			-- Check cache using full item link (avoids strfind on cache hit)
 			local cached = ItemCache[itemLink]
-			if not cached then
+			-- if not cached then
 				-- Extract item link for SetHyperlink only when not cached
 				local _, _, eqItemLink = strfind(itemLink, "(item:%d+:%d+:%d+:%d+)")
 				if eqItemLink then
@@ -366,7 +366,7 @@ local function ScanAllGear()
 					end
 					ItemCache[itemLink] = cached
 				end
-			end
+			-- end
 
 			if cached then
 				-- Add cached values to totals
