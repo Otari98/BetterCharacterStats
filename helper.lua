@@ -47,6 +47,7 @@ local SetBonus = {
 	haste = {},
 	armor_pen = {},
 	spell_pen = {},
+	block = {},
 }
 
 -- Talent cache variables (class-specific)
@@ -87,23 +88,22 @@ local function ScanAllGear()
 		local itemLink = GetInventoryItemLink("player", slot)
 		if itemLink then
 			-- Check cache using full item link (avoids strfind on cache hit)
+			if not ItemCache[itemLink] then ItemCache[itemLink] = {} end
 			local cached = ItemCache[itemLink]
 			-- if not cached then
 				-- Extract item link for SetHyperlink only when not cached
 				local _, _, eqItemLink = strfind(itemLink, "(item:%d+:%d+:%d+:%d+)")
 				if eqItemLink then
 					-- Parse the item and cache it
-					cached = {}
+					for k in pairs(cached) do cached[k] = nil end
 					BCS_Tooltip:ClearLines()
 					BCS_Tooltip:SetHyperlink(eqItemLink)
 
 					for line = 1, BCS_Tooltip:NumLines() do
 						local text = _G[BCS_Prefix .. "TextLeft" .. line]:GetText()
 						if text then
-							local _, _, value
-
 							-- ===== HIT =====
-							_, _, value = strfind(text, L["Equip: Improves your chance to hit by (%d)%%."])
+							local _, _, value = strfind(text, L["Equip: Improves your chance to hit by (%d)%%."])
 							if value then cached.hit = (cached.hit or 0) + tonumber(value) end
 
 							_, _, value = strfind(text, L["/Hit %+(%d+)"])
@@ -118,10 +118,8 @@ local function ScanAllGear()
 							-- ===== SPELL HIT =====
 							_, _, value = strfind(text, L["Equip: Improves your chance to hit with spells by (%d)%%."])
 							if value then cached.spell_hit = (cached.spell_hit or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["/Spell Hit %+(%d+)"])
 							if value then cached.spell_hit = (cached.spell_hit or 0) + tonumber(value) end
-
 							-- Scythe of Elune (hit + crit)
 							_, _, value = strfind(text, L["Improves your chance to hit and get a critical strike with spells by (%d+)%%"])
 							if value then
@@ -138,83 +136,74 @@ local function ScanAllGear()
 							-- ===== RANGED CRIT =====
 							_, _, value = strfind(text, L["Equip: Improves your chance to get a critical strike by (%d)%%."])
 							if value then cached.ranged_crit = (cached.ranged_crit or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["Equip: Improves your chance to get a critical strike with missile weapons by (%d)%%."])
 							if value then cached.ranged_crit = (cached.ranged_crit or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["%+(%d+)%% Critical Strike"])
 							if value then cached.ranged_crit = (cached.ranged_crit or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["+(%d)%% Ranged Crit"])
 							if value then cached.ranged_crit = (cached.ranged_crit or 0) + tonumber(value) end
 
 							-- ===== SPELL CRIT =====
 							_, _, value = strfind(text, L["Equip: Improves your chance to get a critical strike with spells by (%d)%%."])
 							if value then cached.spell_crit = (cached.spell_crit or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["(%d)%% Spell Critical Strike"])
 							if value then cached.spell_crit = (cached.spell_crit or 0) + tonumber(value) end
 
 							-- ===== SPELL POWER (damage and healing) =====
 							_, _, value = strfind(text, L["Equip: Increases damage and healing done by magical spells and effects by up to (%d+)%."])
 							if value then cached.damage_and_healing = (cached.damage_and_healing or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["Spell Damage %+(%d+)"])
 							if value then cached.damage_and_healing = (cached.damage_and_healing or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["^%+(%d+) Spell Damage and Healing"])
 							if value then cached.damage_and_healing = (cached.damage_and_healing or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["^%+(%d+) Damage and Healing Spells"])
 							if value then cached.damage_and_healing = (cached.damage_and_healing or 0) + tonumber(value) end
-
 							_, _, value = strfind(text, L["^%+(%d+) Spell Power"])
 							if value then cached.damage_and_healing = (cached.damage_and_healing or 0) + tonumber(value) end
-
 							-- Atiesh (druid/priest) - damage only portion
 							_, _, value = strfind(text, L["Equip: Increases your spell damage by up to (%d+) and your healing by up to %d+."])
 							if value then cached.only_damage = (cached.only_damage or 0) + tonumber(value) end
-
 							-- Scythe of Elune damage only
 							_, _, value = strfind(text, L["Increases damage done by magical spells and effects by up to (%d+)"])
 							if value then cached.only_damage = (cached.only_damage or 0) + tonumber(value) end
 
 							-- ===== SCHOOL SPECIFIC SPELL POWER =====
+							-- Arcane
 							_, _, value = strfind(text, L["Equip: Increases damage done by Arcane spells and effects by up to (%d+)."])
 							if value then cached.arcane = (cached.arcane or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["^%+(%d+) Arcane Spell Damage"])
 							if value then cached.arcane = (cached.arcane or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["Arcane Damage %+(%d+)"])
 							if value then cached.arcane = (cached.arcane or 0) + tonumber(value) end
-
+							-- Fire
 							_, _, value = strfind(text, L["Equip: Increases damage done by Fire spells and effects by up to (%d+)."])
 							if value then cached.fire = (cached.fire or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["Fire Damage %+(%d+)"])
 							if value then cached.fire = (cached.fire or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["^%+(%d+) Fire Spell Damage"])
 							if value then cached.fire = (cached.fire or 0) + tonumber(value) end
-
+							-- Frost
 							_, _, value = strfind(text, L["Equip: Increases damage done by Frost spells and effects by up to (%d+)."])
 							if value then cached.frost = (cached.frost or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["Frost Damage %+(%d+)"])
 							if value then cached.frost = (cached.frost or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["^%+(%d+) Frost Spell Damage"])
 							if value then cached.frost = (cached.frost or 0) + tonumber(value) end
-
+							-- Holy
 							_, _, value = strfind(text, L["Equip: Increases damage done by Holy spells and effects by up to (%d+)."])
 							if value then cached.holy = (cached.holy or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["^%+(%d+) Holy Spell Damage"])
 							if value then cached.holy = (cached.holy or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["Holy Damage %+(%d+)"])
 							if value then cached.holy = (cached.holy or 0) + tonumber(value) end
-
+							-- Nature
 							_, _, value = strfind(text, L["Equip: Increases damage done by Nature spells and effects by up to (%d+)."])
 							if value then cached.nature = (cached.nature or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["^%+(%d+) Nature Spell Damage"])
 							if value then cached.nature = (cached.nature or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["Nature Damage %+(%d+)"])
 							if value then cached.nature = (cached.nature or 0) + tonumber(value) end
-
+							-- Shadow
 							_, _, value = strfind(text, L["Equip: Increases damage done by Shadow spells and effects by up to (%d+)."])
 							if value then cached.shadow = (cached.shadow or 0) + tonumber(value) end
 							_, _, value = strfind(text, L["Shadow Damage %+(%d+)"])
@@ -1742,7 +1731,9 @@ function BCS:GetBlockValue()
 	local mod = BCScache["talents"].block_mod
 
 	-- Gear (still scanned here as block value isn't in the gear cache)
+	twipe(SetBonus.block)
 	for slot = 1, 19 do
+		local setName
 		if BCS_Tooltip:SetInventoryItem("player", slot) then
 			local _, _, eqItemLink = strfind(GetInventoryItemLink("player", slot), "(item:%d+:%d+:%d+:%d+)")
 			if eqItemLink then
@@ -1757,12 +1748,20 @@ function BCS:GetBlockValue()
 					if value then
 						blockValue = blockValue + tonumber(value)
 					end
-					_, _, value = strfind(text, L["Equip: Increases the block value of your shield by (%d+)."])
+					_, _, value = strfind(text, L["Equip: Increases the block value of your shield by (%d+)"])
 					if value then
 						blockValue = blockValue + tonumber(value)
 					end
 					_, _, value = strfind(text, L["Block Value %+(%d+)"])
 					if value then
+						blockValue = blockValue + tonumber(value)
+					end
+
+					_, _, value = strfind(text, setPattern)
+					if value then setName = value end
+					_, _, value = strfind(text, L["^Set: Increases the block value of your shield by (%d+)"])
+					if value and setName and not SetBonus.block[setName] then
+						SetBonus.block[setName] = true
 						blockValue = blockValue + tonumber(value)
 					end
 				end
@@ -1771,7 +1770,7 @@ function BCS:GetBlockValue()
 	end
 
 	-- Buffs
-	--Glyph of Deflection
+	-- Glyph of Deflection
 	local _, _, value = BCS:GetPlayerAura(L["Block value increased by (%d+)"])
 	if value then
 		blockValue = blockValue + tonumber(value)

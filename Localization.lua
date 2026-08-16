@@ -344,7 +344,8 @@ BCS["L"] = {
 
 	-- Block value
 	["(%d+) Block"] = "(%d+) Block",
-	["Equip: Increases the block value of your shield by (%d+)."] = "Equip: Increases the block value of your shield by (%d+).",
+	["Equip: Increases the block value of your shield by (%d+)"] = "Equip: Increases the block value of your shield by (%d+)",
+	["^Set: Increases the block value of your shield by (%d+)"] = "^Set: Increases the block value of your shield by (%d+)",
 	["Block Value %+(%d+)"] = "Block Value %+(%d+)",
 	["amount of damage absorbed by your shield by (%d+)%%"] = "amount of damage absorbed by your shield by (%d+)%%",
 	["increases the amount blocked by (%d+)%%"] = "increases the amount blocked by (%d+)%%",
